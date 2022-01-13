@@ -1,6 +1,5 @@
 * {
   margin: auto;
-  padding: auto;
 }
 
 body {
@@ -78,4 +77,8 @@ input {
   font-weight: 600;
   border-radius: 5px;
   cursor: pointer;
+}
+
+.dashboard {
+  color: white;
 }
