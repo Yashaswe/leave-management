@@ -35,23 +35,24 @@ const Login = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
-  const [userToken, setUserToken] = useState(null);
 
   const { data, error, update } = useApiLogin();
 
   async function loginUser() {
     const loginDetails = JSON.stringify({ userName, password });
     await update(loginDetails);
-    setUserToken(data);
   }
 
   async function handleLogin(e) {
     e.preventDefault();
     await loginUser();
-    if (userToken) {
+  }
+
+  useEffect(() => {
+    if (data) {
       navigate("/dashboard");
     }
-  }
+  }, [data]);
 
   return (
     <div>
