@@ -79,6 +79,10 @@ input {
   cursor: pointer;
 }
 
+.error {
+  color: red;
+  font-size: 12px;
+}
 .dashboard {
   color: white;
 }

@@ -35,6 +35,10 @@ const Login = () => {
   const navigate = useNavigate();
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [loginError, setLoginError] = useState({
+    userName: "",
+    password: "",
+  });
 
   const { data, error, update } = useApiLogin();
 
@@ -44,8 +48,48 @@ const Login = () => {
   }
 
   async function handleLogin(e) {
+    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    let validation = true;
+
+    if (userName.length === 0) {
+      validation = false;
+      setLoginError((prevState) => ({
+        ...prevState,
+        userName: "Please fill in the required UserName",
+      }));
+    } else if (!userName.match(mailformat)) {
+      validation = false;
+
+      setLoginError((prevState) => ({
+        ...prevState,
+        userName: "Incorrect email address",
+      }));
+    } else {
+      setLoginError((prevState) => ({
+        ...prevState,
+        userName: "",
+      }));
+    }
+
+    if (password.length === 0) {
+      validation = false;
+      setLoginError((prevState) => ({
+        ...prevState,
+        password: "Please fill in the required password",
+      }));
+    } else {
+      setLoginError((prevState) => ({
+        ...prevState,
+        password: "",
+      }));
+    }
+
+    console.log(loginError);
+    console.log("error", loginError.userName);
     e.preventDefault();
-    await loginUser();
+    if (validation) {
+      await loginUser();
+    }
   }
 
   useEffect(() => {
@@ -62,21 +106,27 @@ const Login = () => {
           <label>User Name</label>
           <input
             type="text"
-            placeholder="Email or Phone"
+            required
+            placeholder="Email"
+            name="UserName"
             onChange={(e) => {
               setUserName(e.target.value);
             }}
-          ></input>
+          />
+          <p className="error">{loginError.userName}</p>
         </div>
         <div className="input_password">
           <label>Password</label>
           <input
+            required
             type="password"
             placeholder="Password"
+            name="Password"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
           ></input>
+          <p className="error">{loginError.password}</p>
         </div>
         <button
           className="login_button"
