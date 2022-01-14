@@ -1,6 +1,32 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+function validateEmail(email) {
+  const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (!email) throw new Error("Email is required");
+  if (!email.match(mailformat)) throw new Error("Email is invalid");
+}
+
+function validatePassword(password) {
+  if (!password) throw new Error("Password is required");
+}
+
+function validateAuthForm(formData) {
+  const { email, password } = formData;
+  const errors = {};
+  try {
+    validateEmail(email);
+  } catch (err) {
+    errors.email = err.message;
+  }
+  try {
+    validatePassword(password);
+  } catch (err) {
+    errors.password = err.message;
+  }
+  return errors;
+}
+
 function createPostApiHook(endpoint, method) {
   return () => {
     const [apiData, setApiData] = useState("");
@@ -33,63 +59,29 @@ const useApiLogin = createPostApiHook("/Login", "POST");
 
 const Login = () => {
   const navigate = useNavigate();
-  const [userName, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
   const [loginError, setLoginError] = useState({
-    userName: "",
+    email: "",
     password: "",
   });
 
   const { data, error, update } = useApiLogin();
 
   async function loginUser() {
-    const loginDetails = JSON.stringify({ userName, password });
+    console.log("hello");
+    const loginDetails = JSON.stringify(formData);
     await update(loginDetails);
   }
 
   async function handleLogin(e) {
-    const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    let validation = true;
-
-    if (userName.length === 0) {
-      validation = false;
-      setLoginError((prevState) => ({
-        ...prevState,
-        userName: "Please fill in the required UserName",
-      }));
-    } else if (!userName.match(mailformat)) {
-      validation = false;
-
-      setLoginError((prevState) => ({
-        ...prevState,
-        userName: "Incorrect email address",
-      }));
-    } else {
-      setLoginError((prevState) => ({
-        ...prevState,
-        userName: "",
-      }));
-    }
-
-    if (password.length === 0) {
-      validation = false;
-      setLoginError((prevState) => ({
-        ...prevState,
-        password: "Please fill in the required password",
-      }));
-    } else {
-      setLoginError((prevState) => ({
-        ...prevState,
-        password: "",
-      }));
-    }
-
-    console.log(loginError);
-    console.log("error", loginError.userName);
     e.preventDefault();
-    if (validation) {
-      await loginUser();
-    }
+    const errors = validateAuthForm(formData);
+
+    if (Object.keys(errors).length !== 0) return setLoginError(errors);
+    return await loginUser();
   }
 
   useEffect(() => {
@@ -98,6 +90,13 @@ const Login = () => {
     }
   }, [data]);
 
+  function handleOnChange(e) {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  }
+
   return (
     <div>
       <form className="login_form">
@@ -105,15 +104,13 @@ const Login = () => {
         <div className="input_username">
           <label>User Name</label>
           <input
-            type="text"
+            type="email"
             required
             placeholder="Email"
-            name="UserName"
-            onChange={(e) => {
-              setUserName(e.target.value);
-            }}
+            name="email"
+            onChange={handleOnChange}
           />
-          <p className="error">{loginError.userName}</p>
+          {loginError.email && <p className="error">{loginError.email}</p>}
         </div>
         <div className="input_password">
           <label>Password</label>
@@ -121,12 +118,12 @@ const Login = () => {
             required
             type="password"
             placeholder="Password"
-            name="Password"
-            onChange={(e) => {
-              setPassword(e.target.value);
-            }}
-          ></input>
-          <p className="error">{loginError.password}</p>
+            name="password"
+            onChange={handleOnChange}
+          />
+          {loginError.password && (
+            <p className="error">{loginError.password}</p>
+          )}
         </div>
         <button
           className="login_button"
