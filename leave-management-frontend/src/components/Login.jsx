@@ -71,7 +71,6 @@ const Login = () => {
   const { data, error, update } = useApiLogin();
 
   async function loginUser() {
-    console.log("hello");
     const loginDetails = JSON.stringify(formData);
     await update(loginDetails);
   }
