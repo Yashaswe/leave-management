@@ -105,6 +105,7 @@ const Login = () => {
           <label>User Name</label>
           <input
             type="email"
+            className="inputText"
             required
             placeholder="Email"
             name="email"
@@ -117,6 +118,7 @@ const Login = () => {
           <input
             required
             type="password"
+            className="inputText"
             placeholder="Password"
             name="password"
             onChange={handleOnChange}
