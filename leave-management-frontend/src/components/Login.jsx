@@ -85,7 +85,8 @@ const Login = () => {
 
   useEffect(() => {
     if (data) {
-      navigate("/dashboard");
+      localStorage.setItem("token", data);
+      navigate("/leave-request");
     }
   }, [data]);
 
@@ -97,7 +98,7 @@ const Login = () => {
   }
 
   return (
-    <div>
+    <div className="login">
       <form className="login_form">
         <h3>Login Here</h3>
         <div className="input_username">

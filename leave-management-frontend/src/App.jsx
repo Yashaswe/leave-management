@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
+import LeaveReq from "./components/LeaveReq";
 import "./index.css";
 
 // function setToken(userToken) {
@@ -28,6 +29,7 @@ function App() {
           <Route path="/" element={<Dashboard />}></Route>
           <Route path="login" element={<Login />}></Route>
           <Route path="dashboard" element={<Dashboard />}></Route>
+          <Route path="leave-request" element={<LeaveReq />}></Route>
         </Routes>
       </div>
     </Router>
@@ -42,7 +44,7 @@ function AppRouter() {
     if (!token) {
       navigate("/login");
     } else {
-      navigate("dashboard");
+      navigate("/leave-request");
     }
   }, []);
 
