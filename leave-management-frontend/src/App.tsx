@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import {
-  BrowserRouter as Router,
-  Route,
   Routes,
+  Route,
   useNavigate,
-  Link,
+  BrowserRouter as Router,
 } from "react-router-dom";
+
 import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 import LeaveReq from "./components/LeaveReq";
@@ -16,23 +16,26 @@ import "./index.css";
 // }
 
 function getToken() {
-  const localStorageToken = JSON.parse(localStorage.getItem("token"));
-  return localStorageToken;
+  const token = localStorage.getItem("token");
+  if (token) return JSON.parse(token);
+  return token;
 }
 
 function App() {
   return (
-    <Router>
-      <AppRouter />
-      <div className="App">
-        <Routes>
-          <Route path="/" element={<Dashboard />}></Route>
-          <Route path="login" element={<Login />}></Route>
-          <Route path="dashboard" element={<Dashboard />}></Route>
-          <Route path="leave-request" element={<LeaveReq />}></Route>
-        </Routes>
-      </div>
-    </Router>
+    <div>
+      <Router>
+        <AppRouter />
+        <div className="App">
+          <Routes>
+            <Route path="/" element={<Dashboard />}></Route>
+            <Route path="login" element={<Login />}></Route>
+            <Route path="dashboard" element={<Dashboard />}></Route>
+            <Route path="leave-request" element={<LeaveReq />}></Route>
+          </Routes>
+        </div>
+      </Router>
+    </div>
   );
 }
 

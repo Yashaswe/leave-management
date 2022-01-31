@@ -1,39 +1,39 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function validateEmail(email) {
+function validateEmail(email: string) {
   const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
   if (!email) throw new Error("Email is required");
   if (!email.match(mailformat)) throw new Error("Email is invalid");
 }
 
-function validatePassword(password) {
+function validatePassword(password: string) {
   if (!password) throw new Error("Password is required");
 }
 
-function validateAuthForm(formData) {
+function validateAuthForm(formData: any) {
   const { email, password } = formData;
-  const errors = {};
+  const errors = { email: "", password: "" };
   try {
     validateEmail(email);
-  } catch (err) {
+  } catch (err: any) {
     errors.email = err.message;
   }
   try {
     validatePassword(password);
-  } catch (err) {
+  } catch (err: any) {
     errors.password = err.message;
   }
   return errors;
 }
 
-function createPostApiHook(endpoint, method) {
+function createPostApiHook(endpoint: string, method: string) {
   return () => {
     const [apiData, setApiData] = useState("");
     const [apiError, setApiError] = useState("");
     const url = "http://localhost:8080" + endpoint;
 
-    function update(dataToApi) {
+    function update(dataToApi: string) {
       fetch(url, {
         method: method,
         headers: {
@@ -75,7 +75,9 @@ const Login = () => {
     await update(loginDetails);
   }
 
-  async function handleLogin(e) {
+  async function handleLogin(
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) {
     e.preventDefault();
     const errors = validateAuthForm(formData);
 
@@ -90,7 +92,7 @@ const Login = () => {
     }
   }, [data]);
 
-  function handleOnChange(e) {
+  function handleOnChange(e: React.ChangeEvent<HTMLInputElement>) {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
