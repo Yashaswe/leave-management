@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Errors, validateAuthForm } from "../../../lib/common";
+import { Errors, validateAuthForm } from "@leave-management/common";
 
 function createPostApiHook(endpoint: string, method: string) {
   return () => {

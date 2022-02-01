@@ -4,6 +4,11 @@
   "main": "index.js",
   "author": "Yashaswe",
   "license": "MIT",
+  "workspaces": [
+    "lib/*",
+    "packages/*"
+  ],
+  "private": true,
   "dependencies": {
     "concurrently": "^7.0.0",
     "cors": "^2.8.5",

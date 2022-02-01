@@ -1,5 +1,5 @@
 {
-  "name": "leave-management-backend",
+  "name": "@leave-management/backend",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -16,6 +16,7 @@
     "express": "^4.17.2",
     "nodemon": "^2.0.15",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.5"
+    "typescript": "^4.5.5",
+    "@leave-management/common": "^1.0.0"
   }
 }

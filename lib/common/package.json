@@ -1,0 +1,6 @@
+{
+  "name": "@leave-management/common",
+  "version": "1.0.0",
+  "main": "common.ts",
+  "license": "MIT"
+}
