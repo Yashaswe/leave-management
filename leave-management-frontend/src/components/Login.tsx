@@ -10,10 +10,13 @@ function validateEmail(email: string) {
 function validatePassword(password: string) {
   if (!password) throw new Error("Password is required");
 }
-
+type Errors = {
+  email?: string;
+  password?: string;
+};
 function validateAuthForm(formData: any) {
   const { email, password } = formData;
-  const errors = { email: "", password: "" };
+  const errors: Errors = {};
   try {
     validateEmail(email);
   } catch (err: any) {
@@ -24,6 +27,7 @@ function validateAuthForm(formData: any) {
   } catch (err: any) {
     errors.password = err.message;
   }
+
   return errors;
 }
 
@@ -63,7 +67,7 @@ const Login = () => {
     email: "",
     password: "",
   });
-  const [loginError, setLoginError] = useState({
+  const [loginError, setLoginError] = useState<Errors>({
     email: "",
     password: "",
   });
@@ -80,8 +84,8 @@ const Login = () => {
   ) {
     e.preventDefault();
     const errors = validateAuthForm(formData);
-
     if (Object.keys(errors).length !== 0) return setLoginError(errors);
+
     return await loginUser();
   }
 
