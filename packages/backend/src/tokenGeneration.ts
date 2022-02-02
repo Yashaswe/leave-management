@@ -1,4 +1,6 @@
-import { Request, Response, NextFunction } from "express";
+{
+  /*import { Request, Response, NextFunction } from "express";
+import { encode, TAlgorithm, decode } from "jwt-simple";
 
 export interface User {
   id: number;
@@ -11,19 +13,10 @@ export interface Session {
   id: number;
   dateCreated: number;
   username: string;
-  /**
-   * Timestamp indicating when the session was created, in Unix milliseconds.
-   */
   issued: number;
-  /**
-   * Timestamp indicating when the session should expire, in Unix milliseconds.
-   */
   expires: number;
 }
 
-/**
- * Identical to the Session type, but without the `issued` and `expires` properties.
- */
 export type PartialSession = Omit<Session, "issued" | "expires">;
 
 export interface EncodeResult {
@@ -46,16 +39,101 @@ export type DecodeResult =
 
 export type ExpirationStatus = "expired" | "active" | "grace";
 
+export function encodeSession(
+  secretKey: string,
+  partialSession: PartialSession
+): EncodeResult {
+  // Always use HS512 to sign the token
+  const algorithm: TAlgorithm = "HS512";
+  // Determine when the token should expire
+  const issued = Date.now();
+  const fifteenMinutesInMs = 15 * 60 * 1000;
+  const expires = issued + fifteenMinutesInMs;
+  const session: Session = {
+    ...partialSession,
+    issued: issued,
+    expires: expires,
+  };
+
+  return {
+    token: encode(session, secretKey, algorithm),
+    issued: issued,
+    expires: expires,
+  };
+}
+
+export function decodeSession(
+  secretKey: string,
+  tokenString: string
+): DecodeResult {
+  const algorithm: TAlgorithm = "HS512";
+
+  let result: Session;
+
+  try {
+    result = decode(tokenString, secretKey, false, algorithm);
+  } catch (_e) {
+    const e: Error = _e;
+    if (
+      e.message === "No token supplied" ||
+      e.message === "Not enough or too many segments"
+    ) {
+      return {
+        type: "invalid-token",
+      };
+    }
+
+    if (
+      e.message === "Signature verification failed" ||
+      e.message === "Algorithm not supported"
+    ) {
+      return {
+        type: "integrity-error",
+      };
+    }
+
+    // Handle json parse errors, thrown when the payload is nonsense
+    if (e.message.indexOf("Unexpected token") === 0) {
+      return {
+        type: "invalid-token",
+      };
+    }
+
+    throw e;
+  }
+
+  return {
+    type: "valid",
+    session: result,
+  };
+}
+
+export function checkExpirationStatus(token: Session): ExpirationStatus {
+  const now = Date.now();
+
+  if (token.expires > now) return "active";
+
+  // Find the timestamp for the end of the token's grace period
+  const threeHoursInMs = 3 * 60 * 60 * 1000;
+  const threeHoursAfterExpiration = token.expires + threeHoursInMs;
+
+  if (threeHoursAfterExpiration > now) return "grace";
+
+  return "expired";
+}
+
 var express = require("express");
-var app = express();
 /**
  * Express middleware, checks for a valid JSON Web Token and returns 401 Unauthorized if one isn't found.
  */
+  /*
 export function requireJwtMiddleware(
   request: Request,
   response: Response,
   next: NextFunction
 ) {
+  const SECRET_KEY_HERE: string =
+    "skdjfsldk23flasdngsd8lkjasnjklasndfdfsgdfs39485880257345738ihdfhal";
   const unauthorized = (message: string) =>
     response.status(401).json({
       ok: false,
@@ -84,7 +162,9 @@ export function requireJwtMiddleware(
     return;
   }
 
-  const expiration: ExpirationStatus = checkExpiration(decodedSession.session);
+  const expiration: ExpirationStatus = checkExpirationStatus(
+    decodedSession.session
+  );
 
   if (expiration === "expired") {
     unauthorized(
@@ -107,7 +187,7 @@ export function requireJwtMiddleware(
       issued: issued,
     };
 
-    res.setHeader(responseHeader, token);
+    response.setHeader(responseHeader, token);
   } else {
     session = decodedSession.session;
   }
@@ -120,4 +200,6 @@ export function requireJwtMiddleware(
 
   // Request has a valid or renewed session. Call next to continue to the authenticated route handler
   next();
+}
+*/
 }
